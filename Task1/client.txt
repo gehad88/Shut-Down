@@ -1,0 +1,38 @@
+package main
+
+import (
+    "fmt"
+    "net"
+    "os/exec"
+)
+
+func main() {
+    // Connect to server
+    conn, err := net.Dial("tcp", "192.168.129.184:9090")
+    if err != nil {
+        fmt.Println("Error connecting to server:", err.Error())
+        return
+    }
+    defer conn.Close()
+
+    // Receive commands from server
+    cmd := make([]byte, 8)
+    _, err = conn.Read(cmd)
+    if err != nil {
+        fmt.Println("Error receiving command:", err.Error())
+        return
+    }
+
+    // Execute shutdown command
+    if string(cmd) == "shutdown" {
+        // Execute shutdown command according to your OS
+        shutdownCmd := exec.Command("shutdown", "/s", "/t", "0")
+        //err := 
+        shutdownCmd.Run()
+        if err != nil {
+            fmt.Println("Error executing shutdown command:", err.Error())
+            return
+        }
+        fmt.Println("Shutdown command executed successfully")
+    }
+}
